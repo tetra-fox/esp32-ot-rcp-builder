@@ -80,6 +80,9 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v8
 
+      - name: List artifacts
+        run: ls -R
+
       - name: Get short SHA
         id: sha
         run: echo "short=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_OUTPUT
