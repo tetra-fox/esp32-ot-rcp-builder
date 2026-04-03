@@ -57,9 +57,9 @@ jobs:
           . $GITHUB_WORKSPACE/esp-idf/export.sh
           idf.py build
 
-      - name: Rename firmware binary
-        working-directory: esp-idf/examples/openthread/ot_rcp/build
-        run: mv esp_ot_rcp.bin ${{ matrix.filename }}.bin
+      - name: Merge binaries
+        working-directory: esp-idf/examples/openthread/ot_rcp
+        run: idf.py merge-bin -o ${{ matrix.filename }}.bin
 
       - name: Upload firmware artifact
         uses: actions/upload-artifact@v7
