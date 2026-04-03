@@ -12,14 +12,15 @@ jobs:
       matrix:
         include:
           - target: esp32c6
-            antenna: internal
-            name: "ESP32-C6 Internal Antenna"
+            name: "ESP32-C6 (generic)"
+            filename: "ot-rcp_esp32c6-generic"
           - target: esp32c6
-            antenna: external
-            name: "ESP32-C6 External Antenna"
-          - target: esp32h2
-            antenna: internal
-            name: "ESP32-H2 Internal Antenna"
+            name: "ESP32-C6 (XIAO external antenna)"
+            filename: "ot-rcp_esp32c6-xiao-external-antenna"
+            xiao_antenna_patch: true
+          - name: "ESP32-H2 (generic)"
+            target: esp32h2
+            filename: "ot-rcp_esp32h2-generic"
 
     name: Build ${{ matrix.name }}
 
@@ -38,11 +39,9 @@ jobs:
         working-directory: esp-idf
         run: ./install.sh ${{ matrix.target }}
 
-      - name: Patch antenna code (external only)
-        if: matrix.antenna == 'external'
-        run: |
-          cp esp_ot_rcp.c \
-            esp-idf/examples/openthread/ot_rcp/main/esp_ot_rcp.c
+      - name: Patch antenna code for XIAO ESP32-C6
+        if: matrix.xiao_antenna_patch
+        run: patch esp-idf/examples/openthread/ot_rcp/main/esp_ot_rcp.c < xiao-external-antenna_v6.0.patch
 
       - name: Set target and apply config
         working-directory: esp-idf/examples/openthread/ot_rcp
@@ -61,5 +60,5 @@ jobs:
       - name: Upload firmware artifact
         uses: actions/upload-artifact@v7
         with:
-          name: ot-rcp-${{ matrix.target }}-${{ matrix.antenna }}
+          name: ${{ matrix.filename }}
           path: esp-idf/examples/openthread/ot_rcp/build/esp_ot_rcp.bin

@@ -1,0 +1,28 @@
+--- esp-idf/examples/openthread/ot_rcp/main/esp_ot_rcp.c	2026-04-02 19:17:24.487605800 -0700
++++ examples/openthread/ot_rcp/main/esp_ot_rcp.c	2026-04-02 19:18:10.827449300 -0700
+@@ -31,10 +31,25 @@
+ 
+ #define TAG "ot_esp_rcp"
+ 
++#include "driver/gpio.h"
++#include "freertos/FreeRTOS.h"
++#include "freertos/task.h"
++
++static void xiao_select_external_antenna(void)
++{
++    gpio_set_direction(GPIO_NUM_3, GPIO_MODE_OUTPUT);
++    gpio_set_level(GPIO_NUM_3, 0);
++    vTaskDelay(pdMS_TO_TICKS(100));
++    gpio_set_direction(GPIO_NUM_14, GPIO_MODE_OUTPUT);
++    gpio_set_level(GPIO_NUM_14, 1);
++}
++
+ extern void otAppNcpInit(otInstance *instance);
+ 
+ void app_main(void)
+ {
++    xiao_select_external_antenna();
++
+     // Used eventfds:
+     // * ot task queue
+     // * radio driver
