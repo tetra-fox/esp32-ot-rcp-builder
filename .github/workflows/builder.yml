@@ -78,7 +78,12 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v8
 
+      - name: Get short SHA
+        id: sha
+        run: echo "short=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_OUTPUT
+
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
           files: ot-rcp_*.bin
+          tag_name: build-${{ steps.sha.outputs.short }}
