@@ -13,14 +13,14 @@ jobs:
         include:
           - target: esp32c6
             name: "ESP32-C6 (generic)"
-            filename: "ot-rcp_esp32c6-generic"
+            filename: "ot-rcp_esp32c6_generic"
           - target: esp32c6
             name: "ESP32-C6 (XIAO external antenna)"
-            filename: "ot-rcp_esp32c6-xiao-external-antenna"
+            filename: "ot-rcp_esp32c6_xiao-external-antenna"
             xiao_antenna_patch: true
           - name: "ESP32-H2 (generic)"
             target: esp32h2
-            filename: "ot-rcp_esp32h2-generic"
+            filename: "ot-rcp_esp32h2_generic"
 
     name: Build ${{ matrix.name }}
 
@@ -79,6 +79,9 @@ jobs:
     steps:
       - name: Download artifacts
         uses: actions/download-artifact@v8
+
+      - name: Checkout repo
+        uses: actions/checkout@v6
 
       - name: Get short SHA
         id: sha
