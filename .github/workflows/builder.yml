@@ -59,7 +59,9 @@ jobs:
 
       - name: Merge binaries
         working-directory: esp-idf/examples/openthread/ot_rcp
-        run: idf.py merge-bin -o ${{ matrix.filename }}.bin
+        run: |
+          . $GITHUB_WORKSPACE/esp-idf/export.sh
+          idf.py merge-bin -o ${{ matrix.filename }}.bin
 
       - name: Upload firmware artifact
         uses: actions/upload-artifact@v7
