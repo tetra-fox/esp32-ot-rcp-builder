@@ -57,8 +57,28 @@ jobs:
           . $GITHUB_WORKSPACE/esp-idf/export.sh
           idf.py build
 
+      - name: Rename firmware binary
+        working-directory: esp-idf/examples/openthread/ot_rcp/build
+        run: mv esp_ot_rcp.bin ${{ matrix.filename }}.bin
+
       - name: Upload firmware artifact
         uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.filename }}
-          path: esp-idf/examples/openthread/ot_rcp/build/esp_ot_rcp.bin
+          path: esp-idf/examples/openthread/ot_rcp/build/${{ matrix.filename }}.bin
+
+  release:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'push'
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v8
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ot-rcp_*.bin
